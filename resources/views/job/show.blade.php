@@ -23,8 +23,12 @@
                 </div>
                 <div class="card-footer d-flex justify-content-between">
                     {{$job->type}}
-                    @if(auth::check())
-                    <a class="btn btn-success">apply</a>
+                    @if(auth::check()&&Auth::user()->type=="seeker")
+                    @if(!$job->hello())
+                        <form action="{{url('apply/'.$job->id)}}" method="post">@csrf
+                            <button type="submit" class="btn btn-success">apply</button>
+                        </form>
+                    @endif
                     @endif
                 </div>
             </div>

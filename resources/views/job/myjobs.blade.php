@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between" >
                     <a href="{{url('job/create')}}" class="btn btn-success"> back</a>
-                    <a href="{{url('company')}}" class="btn btn-success"> company</a>
+                    <a href="{{url('applicant')}}" class="btn btn-success"> company</a>
                 </div>
                 <div class="card-body">
                     <table class="table table-bodered table-striped">

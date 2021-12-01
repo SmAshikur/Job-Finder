@@ -16,15 +16,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return "ok";
-});
+Route::get('/', [JobController::class,'welcome']);
+Route::get('/alljobs', [JobController::class,'alljobs']);
 
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::resource('job', JobController::class);
-//Route::get('post/job',[JobController::class,'postJob']);
+Route::post('apply/{id}',[JobController::class,'apply']);
+Route::get('applicant',[JobController::class,'applicant']);
 Route::resource('company', CompanyController::class);
 
 Route::resource('profile', ProfileController::class);

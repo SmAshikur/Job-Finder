@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Company;
 use App\Models\Job;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class JobController extends Controller
@@ -15,6 +16,32 @@ class JobController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+        $this->middleware('employer',['except'=>array('welcome','show','alljobs')]);
+    }
+    public function welcome(){
+        $jobs= Job::get()->take(10);
+        $coms= Company::get()->take(12);
+      return view ('welcome',compact('jobs','coms'));
+    }
+    public function alljobs(Request $request){
+        $keyword=request('title');
+        $type=request('type');
+        $cat=request('category_id');
+        $address=request('address');
+        $cats=Category::get();
+        if($keyword||$type||$cat||$address){
+            $jobs=Job::where('title','LIKE','%'.$keyword.'%')
+            ->orWhere('type',$type)->orWhere('category_id',$cat)
+            ->orWhere('address',$address)->paginate(10);
+            return view ('job.alljobs',compact('jobs','cats'));
+        }else{
+            $jobs= Job::paginate(10);
+            $cats=Category::get();
+            return view ('job.alljobs',compact('jobs','cats'));
+        }
+    }
     public function index()
     {
       $jobs= Job::where('user_id',auth()->user()->id)->paginate(3);
@@ -105,6 +132,18 @@ class JobController extends Controller
     public function destroy(Job $job)
     {
         //
+    }
+
+    public function apply(Request $request, $id){
+        $jobId = Job::find($id);
+        $user_id=auth()->user()->id;
+        $jobId->users()->attach($user_id);
+        return redirect()->back();
+    }
+    public function applicant(){
+        $user_id=auth()->user()->id;
+        $applicant=Job::has('users')->where('user_id',$user_id)->paginate(4);
+        return view('job.applicant',compact('applicant'));
     }
 
 
